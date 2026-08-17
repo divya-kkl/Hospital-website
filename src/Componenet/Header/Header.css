@@ -1,0 +1,352 @@
+
+.main-header {
+    background-color: white;
+    width: 100%;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 15px 0;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    display: flex;
+    align-items: center;
+}
+.logo img {
+    height: 40px; 
+}
+
+.nav-menu ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-menu ul li a {
+    text-decoration: none;
+    color: #272b41;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+}
+
+.nav-menu ul li a .arrow {
+    font-size: 10px;
+    color: #4a5568;
+}
+
+.nav-menu ul li.active a, 
+.nav-menu ul li a:hover {
+    color: #3b82f6; 
+}
+
+.nav-menu ul li.active a .arrow, 
+.nav-menu ul li a:hover .arrow {
+    color: #3b82f6;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-icon {
+    font-size: 14px;
+}
+
+.btn-signup {
+    background: linear-gradient(45deg, #1d4ed8, #06b6d4); 
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(6, 182, 212, 0.3);
+}
+
+.btn-signup:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+
+.btn-register {
+    background-color: #0f172a; 
+    color: white;
+    border: none;
+}
+
+.btn-register:hover {
+    background-color: #1e293b;
+    transform: translateY(-1px);
+}
+
+
+.btn-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    background: transparent;
+    color: #4a5568;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-grid:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.mobile-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    background: transparent;
+    color: #4a5568;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .nav-menu ul {
+        gap: 15px;
+    }
+    .btn {
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none; 
+    }
+    .btn-register, .btn-signup, .btn-grid {
+        display: none;
+    }
+    .mobile-menu-btn {
+        display: flex;
+    }
+    .nav-actions {
+        gap: 10px;
+    }
+}
+
+/* Mobile Drawer Styles */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-menu-drawer {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 300px;
+    max-width: 85%;
+    height: 100vh;
+    background-color: white;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-menu-drawer.open {
+    left: 0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.drawer-logo {
+    height: 35px;
+}
+
+.drawer-close-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: #1a1a1a;
+}
+
+.drawer-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.drawer-nav li {
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.drawer-nav li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.drawer-nav li:first-child a {
+    color: #3b82f6;
+}
+
+.drawer-arrow {
+    font-size: 12px;
+    color: #1a1a1a;
+    padding: 5px;
+    border: 1px solid #f0f0f0;
+    border-radius: 5px;
+}
+
+.drawer-contact {
+    padding: 20px;
+}
+
+.drawer-contact h3 {
+    font-size: 18px;
+    color: #001e4c;
+    margin: 0 0 20px 0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.contact-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #2b6cff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-label {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 4px;
+}
+
+.contact-value {
+    font-size: 15px;
+    color: #001e4c;
+    font-weight: 500;
+}
+
+.drawer-social {
+    padding: 20px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: auto;
+}
+
+.drawer-social h3 {
+    font-size: 18px;
+    color: #001e4c;
+    margin: 0 0 15px 0;
+}
+
+.social-icons-drawer {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons-drawer a {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #001e4c;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.social-icons-drawer a:hover {
+    background: #f8fafc;
+}

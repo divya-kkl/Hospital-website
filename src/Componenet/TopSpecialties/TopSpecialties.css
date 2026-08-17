@@ -1,0 +1,214 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.Top-header {
+    margin: 50px auto 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 40px;
+    width: fit-content;
+    padding: 0 25px;
+    border-radius: 25px;
+
+    background: linear-gradient(to right, #2b6cff, #00d4ff);
+}
+
+.circle-1,
+.circle-2 {
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.heading {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.Top-heading {
+    display: flex;
+    width: 1296px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    margin-left: 110px;
+    font-size: 30px;
+    margin-top: 20px;
+}
+
+.span {
+    color: #0b60f5;
+}
+
+/* --- Slider Container (Arrows work aaga) --- */
+.slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 83%;
+    margin: 50px auto;
+}
+
+.specialties-grid {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 25px;
+    width: 100%;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+    scroll-behavior: smooth;
+}
+
+/* Arrow Buttons CSS */
+.slider-arrow {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.left-arrow {
+    left: -25px;
+}
+
+.right-arrow {
+    right: -25px;
+}
+
+.slider-arrow:hover {
+    background-color: #0b60f5;
+    color: white;
+    border-color: #0b60f5;
+}
+
+.specialty-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.specialty-card:hover {
+    transform: translateY(-5px);
+}
+
+.specialty-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 20px;
+    opacity: 0.8;
+}
+
+.specialty-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    
+}
+
+.specialty-icon-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.specialty-info {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.specialty-info h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.specialty-info p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #777;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .Top-heading {
+        width: 100%;
+        margin-left: 0;
+        gap: 20px;
+        padding: 0 20px;
+    }
+    .slider-container {
+        width: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    .Top-heading {
+        font-size: 23px;
+        flex-direction: column;
+        height: auto;
+        gap: 15px;
+    }
+    .heading-1 {
+        font-size: 20px;
+        text-align: center;
+    }
+    .slider-container {
+        width: 100%;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+    .slider-arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    .left-arrow {
+        left: 0;
+    }
+    .right-arrow {
+        right: 0;
+    }
+    .specialty-card {
+        min-width: 160px;
+    }
+    .specialty-image-wrapper {
+        height: 160px;
+    }
+}

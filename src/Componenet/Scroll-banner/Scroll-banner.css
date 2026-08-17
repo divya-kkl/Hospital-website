@@ -1,0 +1,66 @@
+.scroll-banner-container {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to right, #2b6cff, #00d4ff);
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+}
+
+.scroll-banner-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: scroll-right 25s linear infinite;
+  width: max-content;
+}
+
+.scroll-banner-container:hover .scroll-banner-track {
+  animation-play-state: paused;
+}
+
+.scroll-banner-item {
+  display: flex;
+  align-items: center;
+}
+
+.banner-text {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Arial', sans-serif;
+  margin: 0 20px;
+  letter-spacing: 0.5px;
+}
+
+.banner-separator {
+  width: 50px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.6);
+  display: inline-block;
+  margin: 0 10px;
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .scroll-banner-container {
+    padding: 10px 0;
+  }
+  .banner-text {
+    font-size: 14px;
+    margin: 0 10px;
+  }
+  .banner-separator {
+    width: 30px;
+    margin: 0 5px;
+  }
+}
