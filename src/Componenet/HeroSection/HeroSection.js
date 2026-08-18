@@ -3,7 +3,7 @@ import './HeroSection.css';
 import { FaStar, FaMoon, FaSun, FaVideo, FaMicrophoneSlash, FaMicrophone, FaChevronDown } from "react-icons/fa";
 import { TbGridDots } from "react-icons/tb";
 import { FiSearch } from "react-icons/fi";
-import { BiVideo } from "react-icons/bi";
+
 import docter from "../../assets/doc.png"
 
 function HeroSection(){

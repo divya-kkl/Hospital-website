@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import './Header.css';
 import { FaChevronDown, FaUser, FaBars, FaTimes, FaChevronRight, FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
