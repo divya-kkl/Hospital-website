@@ -1,0 +1,70 @@
+.partners-section {
+    background-color: #030712; 
+    padding: 60px 0;
+    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    border-radius: 0px 0px 30px 30px;
+}
+
+.partners-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.partners-subtitle {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 50px 0;
+    color: #ffffff;
+}
+
+.partners-slider-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.partner-item {
+    display: flex !important; 
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    padding: 10px;
+}
+
+.partner-item:hover {
+    opacity: 0.8;
+}
+
+.partner-icon {
+    color: #3b82f6; 
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.partner-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .partner-name {
+        font-size: 18px;
+    }
+    .partner-icon {
+        font-size: 24px;
+    }
+}
+
+/* Add padding to slick track so items are perfectly centered */
+.slick-track {
+    display: flex !important;
+    align-items: center;
+}

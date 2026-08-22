@@ -1,0 +1,210 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../Supabase';
+import './Profile.css';
+import { FaUserCircle, FaEnvelope, FaUser, FaCalendarCheck, FaHospital, FaClock, FaStethoscope } from 'react-icons/fa';
+
+function Profile() {
+  const [profileData, setProfileData] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('profile');
+
+  // Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    dob: '',
+    phone: '',
+    address: ''
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session && session.user) {
+          const email = session.user.email;
+          
+          const { data: profileResult, error: profileError } = await supabase
+            .from('register')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+             console.error("Error fetching profile:", profileError);
+          }
+          
+          if (profileResult) {
+             setProfileData(profileResult);
+             setFormData({
+               name: profileResult.name || '',
+               email: profileResult.email || '',
+               dob: profileResult.dob || '',
+               phone: profileResult.phone || '',
+               address: profileResult.address || ''
+             });
+          } else {
+             const defaultName = session.user.user_metadata?.full_name || '';
+             setProfileData({ name: defaultName, email: email });
+             setFormData({ ...formData, name: defaultName, email: email });
+          }
+
+          
+          const { data: aptData, error: aptError } = await supabase
+            .from('appointments')
+            .select('*')
+            .eq('email_address', email)
+            .order('created_at', { ascending: false });
+
+          if (aptError) {
+             console.error("Error fetching appointments:", aptError);
+          }
+          
+          if (aptData) {
+             setAppointments(aptData);
+          }
+        }
+      } catch (err) {
+        console.error("Data fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    // Usually you would save this back to Supabase here
+    alert("Profile changes saved successfully!");
+  };
+
+  if (loading) {
+    return <div className="profile-loading">Loading Dashboard...</div>;
+  }
+
+  if (!profileData) {
+    return <div className="profile-error">Please log in to view your dashboard.</div>;
+  }
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-sidebar">
+        <ul className="sidebar-menu">
+          <li 
+            className={activeTab === 'appointments' ? 'active' : ''} 
+            onClick={() => setActiveTab('appointments')}
+          >
+            Appointments
+          </li>
+          <li 
+            className={activeTab === 'profile' ? 'active' : ''} 
+            onClick={() => setActiveTab('profile')}
+          >
+            Profile
+          </li>
+        </ul>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="dashboard-main">
+        {activeTab === 'profile' && (
+          <div className="profile-details-section">
+            <div className="simple-profile-card">
+              <div className="simple-profile-header">
+                <h3>{(formData.name || formData.email).toUpperCase()}</h3>
+              </div>
+              <div className="simple-profile-row">
+                <span className="row-label">Name</span>
+                <span className="row-value">{formData.name || '-'}</span>
+              </div>
+              <div className="simple-profile-row">
+                <span className="row-label">Email</span>
+                <span className="row-value">{formData.email}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'appointments' && (
+          <div className="appointments-section">
+            <h2 className="section-title">Appointments</h2>
+
+            <div className="appointments-list">
+              {appointments.length === 0 ? (
+                <div className="no-appointments">
+                  <FaCalendarCheck className="empty-icon" />
+                  <h3>No Appointments Found</h3>
+                  <p>You haven't booked any appointments yet.</p>
+                </div>
+              ) : (
+                appointments.map((apt) => (
+                  <div key={apt.id} className="appointment-card">
+                    <div className="apt-status-bar"></div>
+                    <div className="apt-content">
+                      <div className="apt-header">
+                        <h3>{apt.service || 'General Consultation'}</h3>
+                        <span className="apt-type-badge">{apt.appointment_type || 'Clinic'}</span>
+                      </div>
+                      
+                      <div className="apt-details-grid">
+                        <div className="apt-detail-item">
+                          <FaCalendarCheck className="apt-icon" />
+                          <div>
+                            <span className="apt-label">Date</span>
+                            <span className="apt-value">{apt.appointment_date}</span>
+                          </div>
+                        </div>
+                    
+                        <div className="apt-detail-item">
+                          <FaClock className="apt-icon" />
+                          <div>
+                            <span className="apt-label">Time</span>
+                            <span className="apt-value">{apt.appointment_time}</span>
+                          </div>
+                        </div>
+                        <div className="apt-detail-item">
+                          <FaHospital className="apt-icon" />
+                          <div>
+                            <span className="apt-label">Clinic</span>
+                            <span className="apt-value">{apt.clinic_name || 'Not specified'}</span>
+                          </div>
+                        </div>
+                        <div className="apt-detail-item">
+                          <FaStethoscope className="apt-icon" />
+                          <div>
+                            <span className="apt-label">Patient</span>
+                            <span className="apt-value">{apt.patient_name || `${apt.first_name || ''} ${apt.last_name || ''}`.trim() || 'Unknown'}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {apt.reason_for_visit && (
+                         <div className="apt-reason">
+                           <span className="apt-label">Reason for Visit:</span>
+                           <p>{apt.reason_for_visit}</p>
+                         </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Profile;
