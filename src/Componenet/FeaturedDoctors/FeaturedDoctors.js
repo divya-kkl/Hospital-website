@@ -3,8 +3,11 @@ import "./FeaturedDoctors.css";
 import { FaStar, FaRegHeart, FaRegCalendarAlt } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
 import docImage from "../../assets/doc.png";
+import { useNavigate } from "react-router-dom";
 
 function FeaturedDoctors() {
+
+  const navigate = useNavigate();
   const doctorsData = [
     {
       name: "Dr. Michael Brown",
@@ -13,7 +16,7 @@ function FeaturedDoctors() {
       time: "30 Min",
       fee: "$650",
       rating: "5.0",
-      image: docImage, 
+      image: docImage,
       themeColor: "#5b4cfa"
     },
     {
@@ -52,13 +55,13 @@ function FeaturedDoctors() {
     <div className="featured-doctors-section">
       <div className="featured-header">
         <div className='Top-header-1'>
-                        <p className='circle-3'></p>
-                        <p className='heading-3'>Featured Doctors </p>
-                        <p className='circle-4'></p>
-                    </div>
-         <div className='Top-heading-1'>
-                        <h2 className='heading-2'>Our <span className='span1'> Highlighted </span> Doctor</h2>
-                    </div>
+          <p className='circle-3'></p>
+          <p className='heading-3'>Featured Doctors </p>
+          <p className='circle-4'></p>
+        </div>
+        <div className='Top-heading-1'>
+          <h2 className='heading-2'>Our <span className='span1'> Highlighted </span> Doctor</h2>
+        </div>
       </div>
 
       <div className="featured-grid">
@@ -76,12 +79,12 @@ function FeaturedDoctors() {
 
             <div className="doctor-info">
               <div className="specialty-row">
-                <div 
-                  className="left-edge-line" 
+                <div
+                  className="left-edge-line"
                   style={{ backgroundColor: doctor.themeColor }}
                 ></div>
-                <span 
-                  className="specialty-text" 
+                <span
+                  className="specialty-text"
                   style={{ color: doctor.themeColor }}
                 >
                   {doctor.specialty}
@@ -90,13 +93,13 @@ function FeaturedDoctors() {
                   <span className="status-dot"></span> Available
                 </span>
               </div>
-              
+
               <h3 className="doctor-name">{doctor.name}</h3>
-              
+
               <div className="location-row">
-                <MdOutlineLocationOn className="location-icon" /> 
-                <span>{doctor.location}</span> 
-                <span className="dot-separator" style={{ color: doctor.themeColor }}>•</span> 
+                <MdOutlineLocationOn className="location-icon" />
+                <span>{doctor.location}</span>
+                <span className="dot-separator" style={{ color: doctor.themeColor }}>•</span>
                 <span>{doctor.time}</span>
               </div>
 
@@ -107,7 +110,9 @@ function FeaturedDoctors() {
                   <p className="fee-label">Consultation Fees</p>
                   <p className="fee-amount">{doctor.fee}</p>
                 </div>
-                <button className="book-btn">
+                <button className="book-btn" onClick={() => {
+                  navigate('/booking-page')
+                }}>
                   <FaRegCalendarAlt />
                 </button>
               </div>

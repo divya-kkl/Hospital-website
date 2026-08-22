@@ -3,7 +3,7 @@ import React from "react";
 import './Topheader.css';
 import { TbMessageFilled } from "react-icons/tb";
 import { RiPhoneFill } from "react-icons/ri";
-import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import indFlag from "../../assets/IND.png";
 
@@ -35,10 +35,10 @@ function Topheader() {
                         </ul>
                         <div className="divider"></div>
                         <div className="social-icons">
-                            <a href="#"><FaFacebookF /></a>
+                            <a href="#"><FaFacebook  /></a>
                             <a href="#"><FaXTwitter /></a>
                             <a href="#"><FaInstagram /></a>
-                            <a href="#"><FaLinkedinIn /></a>
+                            <a href="#"><FaLinkedin /></a>
                         </div>
                     </div>
                 </div>
