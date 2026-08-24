@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../Supabase';
 import './Header.css';
-import { FaChevronDown, FaUser, FaBars, FaTimes, FaChevronRight, FaFacebookF, FaInstagram, FaLinkedinIn, FaRegUser, FaCalendarAlt, FaRegFileAlt, FaSignOutAlt } from "react-icons/fa";
+import { FaChevronDown, FaUser, FaBars, FaTimes, FaChevronRight, FaFacebookF, FaInstagram, FaLinkedinIn, FaRegUser, FaCalendarAlt,  FaSignOutAlt } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { TbGridDots, TbMessageFilled } from "react-icons/tb";
 import { RiPhoneFill } from "react-icons/ri";
