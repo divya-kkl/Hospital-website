@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.main-banner {
+    position: relative;
+    height: 395px;
+    width: 1260px;
+    background-color: #316Dff;
+    margin-top: -100px;
+    margin-left: 8.5%;
+    border-radius: 35px;
+    overflow: hidden;
+}
+
+.main-bbanner1 {
+    display: flex;
+}
+
+.section-banner {
+    color: white;
+    margin: 28% 0 0 90px;
+    position: relative;
+    z-index: 2;
+}
+
+.phone-img img {
+    height: 300px;
+    width: 370px;
+    margin: 26% 0 0 105%;
+    position: relative;
+    z-index: 2;
+}
+
+.section-banner h3 {
+    font-size: 16px;
+}
+
+.section-banner h1 {
+    font-size: 42px;
+    font-weight: 1000;
+}
+
+.AppStore {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-top: 50px;
+}
+
+.AppStore img {
+    height: 70px;
+    width: 160px;
+}
+
+.gooleStore {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.gooleStore img {
+    height: 70px;
+    width: 160px;
+}
+
+.poi1 {
+    position: absolute;
+    top: 0;
+    left: 0px;
+    z-index: 1;
+}
+
+.poi2 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: rotate(-0deg);
+    z-index: 1;
+}
+
+.poi3 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: rotate(0deg);
+    z-index: 1;
+}
+
+
+@media (max-width: 1300px) {
+    .main-banner {
+        width: 95%;
+        margin-left: 2.5%;
+    }
+    .phone-img img {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-banner {
+        height: auto;
+        padding-bottom: 50px;
+    }
+    .main-bbanner1 {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .section-banner {
+        margin: 40px auto 20px;
+    }
+    .phone-img img {
+       display: none;
+    }
+    .AppStore {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-banner h1 {
+        font-size: 32px;
+    }
+    .main-banner {
+        border-radius: 20px;
+        margin-top: -50px;
+    }
+    .AppStore img, .gooleStore img {
+        height: 50px;
+        width: 120px;
+    }
+}

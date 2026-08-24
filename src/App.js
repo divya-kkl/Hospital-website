@@ -1,26 +1,39 @@
-
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import Topheader from './Componenet/Topheader/Topheader';
 import Header from './Componenet/Header/Header';
-import HeroSection from './Componenet/HeroSection/HeroSection';
-import Category from './Componenet/Category/Category';
-import TopSpecialties from './Componenet/TopSpecialties/TopSpecialties';
-import FeaturedDoctors from './Componenet/FeaturedDoctors/FeaturedDoctors';
-import ScrollBanner from './Componenet/Scroll-banner/Scroll-banner';
-import ReasonSection from './Componenet/Reason-Section/Reason-Section';
+import Footer from './Componenet/Footer/Footer';
+import Home from './Pages/Home/Home';
+import Register from './Pages/Register/Register';
+import Booking from './Pages/Booking/Booking';
+import Profile from './Pages/Profile/Profile';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const showFooter = location.pathname !== '/booking-page';
+
   return (
     <div className="App">
       <Topheader />
       <Header />
-      <HeroSection />
-      <Category />
-      <TopSpecialties />
-      <FeaturedDoctors />
-      <ScrollBanner />
-      <ReasonSection />
+      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/booking-page" element={<Booking />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+      
+      {showFooter && <Footer />}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 

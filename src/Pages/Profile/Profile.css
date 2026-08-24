@@ -1,0 +1,251 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: calc(100vh - 100px);
+  background-color: #f8fafc;
+}
+
+
+.dashboard-sidebar {
+  flex: 0 0 250px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+.sidebar-menu li {
+  padding: 16px 20px;
+  font-size: 16px;
+  color: #475569;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.sidebar-menu li:last-child {
+  border-bottom: none;
+}
+
+.sidebar-menu li:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.sidebar-menu li.active {
+  background-color: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  border-left: 4px solid #0f172a;
+}
+
+.dashboard-main {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+  padding: 30px 40px;
+}
+
+.section-title {
+  font-size: 24px;
+  color: #0f172a;
+  margin: 0 0 30px 0;
+  font-weight: 700;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+
+.simple-profile-card {
+  /* background: white; */
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-width: 800px;
+  overflow: hidden;
+}
+
+.simple-profile-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.simple-profile-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #000;
+  letter-spacing: 0.5px;
+}
+
+.simple-profile-row {
+  display: flex;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.simple-profile-row:last-child {
+  border-bottom: none;
+}
+
+.row-label {
+  flex: 0 0 200px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.row-value {
+  flex: 1;
+  color: #334155;
+  font-size: 15px;
+}
+
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.appointment-card {
+  /* background: white; */
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  border: 1px solid #f1f5f9;
+}
+
+.apt-status-bar {
+  width: 6px;
+  background: #3b82f6;
+}
+
+.apt-content {
+  padding: 20px 25px;
+  width: 100%;
+}
+
+.apt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.apt-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.apt-type-badge {
+  background-color: #eff6ff;
+  color: #2563eb;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.apt-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.apt-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.apt-icon {
+  font-size: 16px;
+  color: #3b82f6;
+  margin-top: 2px;
+}
+
+.apt-label {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.apt-value {
+  display: block;
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.apt-reason {
+  /* background-color: #f8fafc; */
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.apt-reason p {
+  margin: 5px 0 0 0;
+  color: #334155;
+  font-size: 13px;
+}
+
+.no-appointments {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 50px;
+  color: #cbd5e1;
+  margin-bottom: 15px;
+}
+
+.profile-loading,
+.profile-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: 18px;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  .dashboard-sidebar {
+    flex: none;
+    width: 100%;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-group.full-width {
+    grid-column: 1;
+  }
+  .dashboard-main {
+    padding: 20px;
+  }
+}

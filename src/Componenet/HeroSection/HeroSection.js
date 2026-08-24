@@ -1,6 +1,6 @@
 import React from "react";
 import './HeroSection.css';
-import { FaStar, FaMoon, FaSun, FaVideo, FaMicrophoneSlash, FaMicrophone, FaChevronDown } from "react-icons/fa";
+import { FaStar, FaVideo, FaMicrophoneSlash, FaMicrophone, FaChevronDown } from "react-icons/fa";
 import { TbGridDots } from "react-icons/tb";
 import { FiSearch } from "react-icons/fi";
 
@@ -79,11 +79,11 @@ function HeroSection(){
             </div>
         </div>
 
-       
+{/*        
         <div className="theme-toggle-pill">
             <button className="toggle-btn dark-mode"><FaMoon /></button>
             <button className="toggle-btn light-mode"><FaSun /></button>
-        </div>
+        </div> */}
     </section>
  )
 }

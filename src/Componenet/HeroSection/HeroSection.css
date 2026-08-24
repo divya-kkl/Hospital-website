@@ -350,7 +350,7 @@
 
 
 .theme-toggle-pill {
-    position: absolute;
+    position: fixed;
     right: 25px;
     top: 50%;
     transform: translateY(-50%);
