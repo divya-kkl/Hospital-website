@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
 import { supabase } from "../../Supabase";
-import { FaEye, FaEyeSlash, FaGoogle, FaFacebook } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import image from "../../assets/image.png"
 import "./Register.css";
 
@@ -17,7 +17,7 @@ function Register() {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -69,17 +69,6 @@ function Register() {
       setMessage("(Error): " + error.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSocialLogin = async (provider) => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-      });
-      if (error) throw error;
-    } catch (error) {
-      setMessage("(Error): " + error.message);
     }
   };
 
