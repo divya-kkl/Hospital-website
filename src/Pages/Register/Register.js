@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { supabase } from "../../Supabase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import image from "../../assets/image.png"
@@ -17,7 +16,6 @@ function Register() {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
