@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../Supabase';
 import './Profile.css';
-import { FaUserCircle, FaEnvelope, FaUser, FaCalendarCheck, FaHospital, FaClock, FaStethoscope } from 'react-icons/fa';
+import { FaCalendarCheck, FaHospital, FaClock, FaStethoscope } from 'react-icons/fa';
 
 function Profile() {
   const [profileData, setProfileData] = useState(null);
@@ -48,7 +48,7 @@ function Profile() {
           } else {
              const defaultName = session.user.user_metadata?.full_name || '';
              setProfileData({ name: defaultName, email: email });
-             setFormData({ ...formData, name: defaultName, email: email });
+             setFormData(prev => ({ ...prev, name: defaultName, email: email }));
           }
 
           
@@ -75,19 +75,6 @@ function Profile() {
 
     fetchData();
   }, []);
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    // Usually you would save this back to Supabase here
-    alert("Profile changes saved successfully!");
-  };
 
   if (loading) {
     return <div className="profile-loading">Loading Dashboard...</div>;
