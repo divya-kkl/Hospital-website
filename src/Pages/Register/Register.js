@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../../Supabase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../../assets/image.png"
 import "./Register.css";
 
@@ -16,6 +17,7 @@ function Register() {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,6 +49,7 @@ function Register() {
         options: {
           data: {
             full_name: formData.name,
+            role: "patient"
           },
         },
       });
@@ -62,6 +65,7 @@ function Register() {
 
       console.log("Database Response:", dbData);
       setMessage("Registration Successful!");
+      setTimeout(() => navigate("/"), 1500);
 
     } catch (error) {
       setMessage("(Error): " + error.message);

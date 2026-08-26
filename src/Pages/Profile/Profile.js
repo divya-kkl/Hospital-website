@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../Supabase';
+import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 import { FaCalendarCheck, FaHospital, FaClock, FaStethoscope } from 'react-icons/fa';
 
@@ -8,6 +9,7 @@ function Profile() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
+  const navigate = useNavigate();
 
   // Form State
   const [formData, setFormData] = useState({
@@ -24,6 +26,14 @@ function Profile() {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session && session.user) {
+
+
+          // If the user is an admin, redirect them to the admin dashboard
+          if (session.user.user_metadata?.role === 'admin') {
+            navigate('/admin-dashboard');
+            return;
+          }
+
           const email = session.user.email;
           
           const { data: profileResult, error: profileError } = await supabase
@@ -141,7 +151,12 @@ function Profile() {
                     <div className="apt-content">
                       <div className="apt-header">
                         <h3>{apt.service || 'General Consultation'}</h3>
-                        <span className="apt-type-badge">{apt.appointment_type || 'Clinic'}</span>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                          <span className="apt-type-badge">{apt.appointment_type || 'Clinic'}</span>
+                          <span className={`apt-status-badge ${apt.status || 'pending'}`}>
+                             {apt.status || 'pending'}
+                          </span>
+                        </div>
                       </div>
                       
                       <div className="apt-details-grid">
