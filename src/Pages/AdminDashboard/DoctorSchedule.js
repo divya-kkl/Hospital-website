@@ -16,33 +16,32 @@ function DoctorSchedule({ user }) {
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const { data } = await supabase
+          .from('admin_schedules')
+          .select('*')
+          .eq('email', user.email)
+          .single();
+
+        if (data) {
+          setWorkingDays(data.working_days ? data.working_days.split(',') : []);
+          setStartTime(data.start_time || '');
+          setEndTime(data.end_time || '');
+          setBreakTime(data.break_time || '');
+          setLeaveDays(data.leave_days || '');
+          setDisabledSlots(data.disabled_slots || '');
+          setStatus(data.status || 'Available');
+        }
+      } catch (error) {
+        console.log('No existing schedule found or error fetching.');
+      }
+    };
+
     if (user) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchSchedule();
     }
   }, [user]);
-
-  const fetchSchedule = async () => {
-    try {
-      const { data } = await supabase
-        .from('admin_schedules')
-        .select('*')
-        .eq('email', user.email)
-        .single();
-
-      if (data) {
-        setWorkingDays(data.working_days ? data.working_days.split(',') : []);
-        setStartTime(data.start_time || '');
-        setEndTime(data.end_time || '');
-        setBreakTime(data.break_time || '');
-        setLeaveDays(data.leave_days || '');
-        setDisabledSlots(data.disabled_slots || '');
-        setStatus(data.status || 'Available');
-      }
-    } catch (error) {
-      console.log('No existing schedule found or error fetching.');
-    }
-  };
 
   const handleDayToggle = (day) => {
     if (workingDays.includes(day)) {

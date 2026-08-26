@@ -9,32 +9,33 @@ function AppointmentManagement({ user }) {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    fetchAppointments();
-  }, []);
+    const fetchAppointments = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('appointments')
+          .select('*')
+          .eq('doctor_email', user.email)
+          .order('id', { ascending: false });
 
-  const fetchAppointments = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('*')
-        .eq('doctor_email', user.email)
-        .order('id', { ascending: false });
-
-      if (error) throw error;
-      setAppointments(data || []);
+        if (error) throw error;
+        setAppointments(data || []);
+        
       
-    
-      if (data && data.length > 0) {
-        setSelectedAppointment(data[0]);
+        if (data && data.length > 0) {
+          setSelectedAppointment(data[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-    } finally {
-      setLoading(false);
+    };
+
+    if (user && user.email) {
+      fetchAppointments();
     }
-  };
+  }, [user]);
 
   const updateStatus = async (id, newStatus) => {
     try {
