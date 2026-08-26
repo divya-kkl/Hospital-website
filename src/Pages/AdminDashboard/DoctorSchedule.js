@@ -17,9 +17,9 @@ function DoctorSchedule({ user }) {
 
   useEffect(() => {
     if (user) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchSchedule();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchSchedule = async () => {
