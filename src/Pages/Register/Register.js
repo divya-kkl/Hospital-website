@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../../Supabase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import image from "../../assets/image.png"
 import "./Register.css";
 
