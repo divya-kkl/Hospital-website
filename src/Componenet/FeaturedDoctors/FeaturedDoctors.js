@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../Supabase";
 import "./FeaturedDoctors.css";
 import { FaStar, FaRegHeart, FaRegCalendarAlt } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -8,51 +9,60 @@ import { useNavigate } from "react-router-dom";
 function FeaturedDoctors() {
 
   const navigate = useNavigate();
-  const doctorsData = [
-    {
-      name: "Dr. Michael Brown",
-      specialty: "Psychologist",
-      location: "Minneapolis, MN",
-      time: "30 Min",
-      fee: "$650",
-      rating: "5.0",
-      image: docImage,
-      themeColor: "#5b4cfa"
-    },
-    {
-      name: "Dr. Nicholas Tello",
-      specialty: "Pediatrician",
-      location: "Ogden, IA",
-      time: "60 Min",
-      fee: "$350",
-      rating: "4.6",
-      image: docImage,
-      themeColor: "#f44380"
-    },
-    {
-      name: "Dr. Harold Bryant",
-      specialty: "Neurologist",
-      location: "Winona, MS",
-      time: "30 Min",
-      fee: "$500",
-      rating: "4.8",
-      image: docImage,
-      themeColor: "#00c39a"
-    },
-    {
-      name: "Dr. Sandra Jones",
-      specialty: "Cardiologist",
-      location: "Beckley, WV",
-      time: "30 Min",
-      fee: "$550",
-      rating: "4.8",
-      image: docImage,
-      themeColor: "#0b60f5"
-    }
-  ];
+  const [doctorsData, setDoctorsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const { data: doctors, error } = await supabase
+          .from('admin_users')
+          .select('*')
+          .limit(4);
+
+        if (error) {
+          throw error;
+        }
+
+        if (doctors && doctors.length > 0) {
+          const emails = doctors.map(d => d.email);
+          const { data: schedules } = await supabase
+            .from('admin_schedules')
+            .select('email, status')
+            .in('email', emails);
+
+          const scheduleMap = {};
+          if (schedules) {
+            schedules.forEach(s => {
+              scheduleMap[s.email] = s.status;
+            });
+          }
+
+          const doctorsWithStatus = doctors.map(d => ({
+            ...d,
+            status: scheduleMap[d.email] || 'Available'
+          }));
+
+          setDoctorsData(doctorsWithStatus);
+        } else {
+          setDoctorsData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching doctors:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
+  if (loading) {
+    return <div className="featured-doctors-section" style={{ textAlign: "center", padding: "50px" }}>Loading Featured Doctors...</div>;
+  }
 
   return (
-    <div className="featured-doctors-section">
+    <div className="featured-doctors-section" id="featured-doctors">
       <div className="featured-header">
         <div className='Top-header-1'>
           <p className='circle-3'></p>
@@ -61,6 +71,7 @@ function FeaturedDoctors() {
         </div>
         <div className='Top-heading-1'>
           <h2 className='heading-2'>Our <span className='span1'> Highlighted </span> Doctor</h2>
+          <span className="view-all-text" onClick={() => navigate('/doctors')}>View All</span>
         </div>
       </div>
 
@@ -68,9 +79,9 @@ function FeaturedDoctors() {
         {doctorsData.map((doctor, index) => (
           <div className="doctor-card" key={index}>
             <div className="doctor-image-wrapper">
-              <img src={doctor.image} alt={doctor.name} className="doctor-image" />
+              <img src={doctor.image || docImage} alt={doctor.name} className="doctor-image" />
               <div className="rating-pill">
-                <FaStar className="rating-star" /> {doctor.rating}
+                <FaStar className="rating-star" /> {doctor.rating || "4.6"}
               </div>
               <div className="heart-icon-wrapper">
                 <FaRegHeart />
@@ -81,26 +92,32 @@ function FeaturedDoctors() {
               <div className="specialty-row">
                 <div
                   className="left-edge-line"
-                  style={{ backgroundColor: doctor.themeColor }}
+                  style={{ backgroundColor: doctor.themeColor || "#0b60f5" }}
                 ></div>
                 <span
                   className="specialty-text"
-                  style={{ color: doctor.themeColor }}
+                  style={{ color: doctor.themeColor || "#0b60f5" }}
                 >
-                  {doctor.specialty}
+                  {doctor.specialty || doctor.specialization || "General"}
                 </span>
-                <span className="available-pill">
-                  <span className="status-dot"></span> Available
-                </span>
+                {doctor.status === 'Unavailable' ? (
+                  <span className="available-pill" style={{ backgroundColor: '#ffebee', color: '#c62828' }}>
+                    <span className="status-dot" style={{ backgroundColor: '#c62828' }}></span> Unavailable
+                  </span>
+                ) : (
+                  <span className="available-pill">
+                    <span className="status-dot"></span> Available
+                  </span>
+                )}
               </div>
 
               <h3 className="doctor-name">{doctor.name}</h3>
 
               <div className="location-row">
                 <MdOutlineLocationOn className="location-icon" />
-                <span>{doctor.location}</span>
-                <span className="dot-separator" style={{ color: doctor.themeColor }}>•</span>
-                <span>{doctor.time}</span>
+                <span>{doctor.location || "Ogden, IA"}</span>
+                <span className="dot-separator" style={{ color: doctor.themeColor || "#0b60f5" }}>•</span>
+                <span>{doctor.time || "60 Min"}</span>
               </div>
 
               <div className="divider-line"></div>
@@ -108,10 +125,10 @@ function FeaturedDoctors() {
               <div className="fee-row">
                 <div className="fee-col">
                   <p className="fee-label">Consultation Fees</p>
-                  <p className="fee-amount">{doctor.fee}</p>
+                  <p className="fee-amount">{doctor.fee || "$350"}</p>
                 </div>
                 <button className="book-btn" onClick={() => {
-                  navigate('/booking-page')
+                  navigate('/booking-page', { state: { doctor } })
                 }}>
                   <FaRegCalendarAlt />
                 </button>

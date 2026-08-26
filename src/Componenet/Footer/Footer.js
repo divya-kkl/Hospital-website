@@ -37,7 +37,7 @@ function Footer() {
     };
 
     return (
-        <footer className="footer-section">
+        <footer className="footer-section" id="footer">
             <div className="footer-container">
                 <div className="footer-row">
                     <div className="footer-col">

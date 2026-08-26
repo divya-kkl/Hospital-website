@@ -1,0 +1,39 @@
+.all-doctors-section {
+  padding: 120px 20px 80px 20px;
+  background-color: #f6f8fb;
+  font-family: 'Arial', sans-serif;
+  min-height: calc(100vh - 200px);
+}
+
+.all-doctors-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.all-doctors-header h2 {
+  font-size: 40px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 15px 0;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.all-doctors-header .span1 {
+  color: #0b60f5;
+}
+
+.all-doctors-header .subtitle {
+  color: #757575;
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.all-doctors-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  max-width: 1300px;
+  margin: 0 auto;
+}

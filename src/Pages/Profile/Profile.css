@@ -163,6 +163,29 @@
   font-weight: 600;
 }
 
+.apt-status-badge {
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.apt-status-badge.pending {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.apt-status-badge.accepted {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.apt-status-badge.cancelled {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
 .apt-details-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

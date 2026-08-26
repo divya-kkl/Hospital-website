@@ -4,10 +4,12 @@ import { FaStar, FaCheckCircle, FaChevronLeft, FaChevronRight, FaHospital, FaVid
 import { MdOutlineLocationOn } from "react-icons/md";
 import docImage from "../../assets/doc.png";
 import { supabase } from '../../Supabase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Booking = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedDoctor = location.state?.doctor;
   const [currentStep, setCurrentStep] = useState(1);
 
   const steps = [
@@ -24,7 +26,10 @@ const Booking = () => {
   const [appointmentType, setAppointmentType] = useState('clinic');
   const [selectedClinic, setSelectedClinic] = useState('AllCare');
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
-  const [selectedTime, setSelectedTime] = useState('09:00 AM');
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const [selectedMonth, setSelectedMonth] = useState(monthNames[new Date().getMonth()]);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedTime, setSelectedTime] = useState('');
   const [isSpecialityDropdownOpen, setIsSpecialityDropdownOpen] = useState(false);
 
   const [services, setServices] = useState([]);
@@ -36,6 +41,8 @@ const Booking = () => {
   const [availableMonths, setAvailableMonths] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState('creditCard');
   const [selectedPatientName, setSelectedPatientName] = useState('');
+  const [disabledSlots, setDisabledSlots] = useState([]);
+  const [bookedSlots, setBookedSlots] = useState([]);
   
   
   const [firstName, setFirstName] = useState('');
@@ -69,10 +76,11 @@ const Booking = () => {
           reason_for_visit: reasonForVisit,
           service: selectedSpeciality,
           additional_service: services.find(s => s.id === selectedService)?.name,
-          appointment_date: `${selectedDate} Oct 2025`,
+          appointment_date: `${selectedDate} ${selectedMonth} ${selectedYear}`,
           appointment_time: selectedTime,
           appointment_type: appointmentTypes.find(a => a.id === appointmentType)?.name,
-          clinic_name: clinics.find(c => c.id === selectedClinic)?.name
+          clinic_name: clinics.find(c => c.id === selectedClinic)?.name,
+          doctor_email: selectedDoctor?.email
         }])
         .select();
 
@@ -157,10 +165,45 @@ const Booking = () => {
         .order('id', { ascending: true });
       if (monthsData) setAvailableMonths(monthsData);
       else console.error(monthsError);
+
+      if (selectedDoctor?.email) {
+        const { data: scheduleData, error: scheduleError } = await supabase
+          .from('admin_schedules')
+          .select('disabled_slots')
+          .eq('email', selectedDoctor.email)
+          .single();
+        
+        if (scheduleData && scheduleData.disabled_slots) {
+          const slots = scheduleData.disabled_slots.split(',').map(s => s.trim());
+          setDisabledSlots(slots);
+        } else if (scheduleError) {
+          console.error("Error fetching doctor schedule:", scheduleError.message);
+        }
+      }
     };
 
     fetchData();
-  }, []);
+  }, [selectedDoctor]);
+
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (selectedDoctor?.email && selectedDate) {
+        const dateString = `${selectedDate} ${selectedMonth} ${selectedYear}`; 
+        const { data: appointments, error } = await supabase
+          .from('appointments')
+          .select('appointment_time')
+          .eq('doctor_email', selectedDoctor.email)
+          .eq('appointment_date', dateString);
+          
+        if (appointments) {
+          setBookedSlots(appointments.map(a => a.appointment_time));
+        } else if (error) {
+          console.error("Error fetching booked slots:", error.message);
+        }
+      }
+    };
+    fetchBookedSlots();
+  }, [selectedDoctor, selectedDate, selectedMonth, selectedYear]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -185,8 +228,54 @@ const Booking = () => {
     return `$${total.toFixed(2)}`;
   };
 
+  // Helper to parse "09:00 AM" or "09:00 A.M" into minutes since midnight
+  const parseTimeStrToMinutes = (timeStr) => {
+    if (!timeStr) return null;
+    const cleaned = timeStr.replace(/\./g, '').trim().toUpperCase();
+    const match = cleaned.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/);
+    if (!match) return null;
+    let hours = parseInt(match[1], 10);
+    const mins = parseInt(match[2], 10);
+    const ampm = match[3];
+    if (ampm === 'PM' && hours < 12) hours += 12;
+    if (ampm === 'AM' && hours === 12) hours = 0;
+    return hours * 60 + mins;
+  };
+
+  const isTimeSlotDisabled = (slotTime) => {
+    // 1. Check if the slot is already booked by a patient
+    if (bookedSlots.includes(slotTime)) return true;
+
+    // 2. Check if the doctor manually disabled it
+    if (!disabledSlots || disabledSlots.length === 0) return false;
+    const slotMinutes = parseTimeStrToMinutes(slotTime);
+    if (slotMinutes === null) return false;
+
+    // disabledSlots is an array from the DB string split by comma
+    for (const part of disabledSlots) {
+      if (part.includes('-')) {
+        const [startStr, endStr] = part.split('-');
+        const startMin = parseTimeStrToMinutes(startStr);
+        const endMin = parseTimeStrToMinutes(endStr);
+        if (startMin !== null && endMin !== null) {
+          if (slotMinutes >= startMin && slotMinutes <= endMin) return true;
+        }
+      } else {
+        const exactMin = parseTimeStrToMinutes(part);
+        if (exactMin === slotMinutes) return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <div className="booking-page-container">
+      {selectedDoctor && (
+        <div style={{ textAlign: "center", marginBottom: "30px" }}>
+           <h2 style={{ color: "#0b60f5", fontWeight: "700" }}>Booking Appointment with {selectedDoctor.name}</h2>
+           <p style={{ color: "#757575" }}>{selectedDoctor.specialization || selectedDoctor.specialty}</p>
+        </div>
+      )}
       <div className="stepper-wrapper">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
@@ -218,17 +307,17 @@ const Booking = () => {
         <div className="doctor-profile-card">
           <div className="doc-info-top">
             <div className="doc-image-box">
-              <img src={docImage} alt="Dr. Michael Brown" />
+              <img src={selectedDoctor?.image || docImage} alt={selectedDoctor?.name || "Doctor"} />
             </div>
             <div className="doc-details">
               <div className="doc-name-rating">
-                <h3>Dr. Michael Brown</h3>
-                <span className="rating-badge"><FaStar className="star-icon" /> 5.0</span>
+                <h3>{selectedDoctor?.name || "Dr. Michael Brown"}</h3>
+                <span className="rating-badge"><FaStar className="star-icon" /> {selectedDoctor?.rating || "4.6"}</span>
               </div>
-              <p className="doc-speciality">Psychologist</p>
+              <p className="doc-speciality">{selectedDoctor?.specialization || selectedDoctor?.specialty || "General"}</p>
               <p className="doc-location">
                 <MdOutlineLocationOn className="loc-icon" />
-                5th Street - 1011 W 5th St, Suite 120, Austin, TX 78703
+                {selectedDoctor?.location || "Ogden, IA"}
               </p>
             </div>
           </div>
@@ -397,12 +486,12 @@ const Booking = () => {
               <div className="calendar-section">
                 <div className="calendar-header">
                   <div className="cal-selects">
-                    <select>
+                    <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
                       {availableYears.map(y => (
                         <option key={y.id} value={y.year_val}>{y.year_val}</option>
                       ))}
                     </select>
-                    <select>
+                    <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
                       {availableMonths.map(m => (
                         <option key={m.id} value={m.month_name}>{m.month_name}</option>
                       ))}
@@ -436,45 +525,57 @@ const Booking = () => {
                 <div className="time-group">
                   <h4>Morning</h4>
                   <div className="slots-grid">
-                    {timeSlots.filter(slot => slot.period === 'Morning').map(slot => (
-                      <div
-                        key={slot.id}
-                        className={`time-slot ${selectedTime === slot.time ? 'active' : ''}`}
-                        onClick={() => setSelectedTime(slot.time)}
-                      >
-                        {slot.time}
-                      </div>
-                    ))}
+                    {timeSlots.filter(slot => slot.period === 'Morning').map(slot => {
+                      const isDisabled = isTimeSlotDisabled(slot.time);
+                      return (
+                        <div
+                          key={slot.id}
+                          className={`time-slot ${selectedTime === slot.time ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
+                          onClick={() => !isDisabled && setSelectedTime(slot.time)}
+                          style={isDisabled ? { opacity: 0.5, cursor: 'not-allowed', backgroundColor: '#e0e0e0', color: '#9e9e9e', textDecoration: 'line-through', pointerEvents: 'none' } : {}}
+                        >
+                          {slot.time}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
 
                 <div className="time-group">
                   <h4>Afternoon</h4>
                   <div className="slots-grid">
-                    {timeSlots.filter(slot => slot.period === 'Afternoon').map(slot => (
-                      <div
-                        key={slot.id}
-                        className={`time-slot ${selectedTime === slot.time ? 'active' : ''}`}
-                        onClick={() => setSelectedTime(slot.time)}
-                      >
-                        {slot.time}
-                      </div>
-                    ))}
+                    {timeSlots.filter(slot => slot.period === 'Afternoon').map(slot => {
+                      const isDisabled = isTimeSlotDisabled(slot.time);
+                      return (
+                        <div
+                          key={slot.id}
+                          className={`time-slot ${selectedTime === slot.time ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
+                          onClick={() => !isDisabled && setSelectedTime(slot.time)}
+                          style={isDisabled ? { opacity: 0.5, cursor: 'not-allowed', backgroundColor: '#e0e0e0', color: '#9e9e9e', textDecoration: 'line-through', pointerEvents: 'none' } : {}}
+                        >
+                          {slot.time}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
 
                 <div className="time-group">
                   <h4>Evening</h4>
                   <div className="slots-grid">
-                    {timeSlots.filter(slot => slot.period === 'Evening').map(slot => (
-                      <div
-                        key={slot.id}
-                        className={`time-slot ${selectedTime === slot.time ? 'active' : ''}`}
-                        onClick={() => setSelectedTime(slot.time)}
-                      >
-                        {slot.time}
-                      </div>
-                    ))}
+                    {timeSlots.filter(slot => slot.period === 'Evening').map(slot => {
+                      const isDisabled = isTimeSlotDisabled(slot.time);
+                      return (
+                        <div
+                          key={slot.id}
+                          className={`time-slot ${selectedTime === slot.time ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
+                          onClick={() => !isDisabled && setSelectedTime(slot.time)}
+                          style={isDisabled ? { opacity: 0.5, cursor: 'not-allowed', backgroundColor: '#e0e0e0', color: '#9e9e9e', textDecoration: 'line-through', pointerEvents: 'none' } : {}}
+                        >
+                          {slot.time}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
@@ -484,7 +585,17 @@ const Booking = () => {
               <button className="btn-back" onClick={() => setCurrentStep(2)}>
                 <FaChevronLeft className="btn-icon" /> Back
               </button>
-              <button className="btn-next" onClick={() => setCurrentStep(4)}>
+              <button className="btn-next" onClick={() => {
+                if (!selectedTime) {
+                  alert("Please select a time slot.");
+                  return;
+                }
+                if (isTimeSlotDisabled(selectedTime)) {
+                  alert("The selected time slot is already booked or disabled. Please choose another time.");
+                  return;
+                }
+                setCurrentStep(4);
+              }}>
                 Add Basic Information <FaChevronRight className="btn-icon-right" />
               </button>
             </div>
