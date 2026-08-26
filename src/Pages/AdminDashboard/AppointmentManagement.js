@@ -9,6 +9,7 @@ function AppointmentManagement({ user }) {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     fetchAppointments();
   }, []);
 

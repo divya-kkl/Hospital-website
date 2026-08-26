@@ -17,13 +17,14 @@ function DoctorSchedule({ user }) {
 
   useEffect(() => {
     if (user) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchSchedule();
     }
   }, [user]);
 
   const fetchSchedule = async () => {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('admin_schedules')
         .select('*')
         .eq('email', user.email)
