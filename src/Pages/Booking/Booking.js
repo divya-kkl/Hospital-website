@@ -5,6 +5,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import docImage from "../../assets/doc.png";
 import { supabase } from '../../Supabase';
 import { useNavigate, useLocation } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -43,8 +44,8 @@ const Booking = () => {
   const [selectedPatientName, setSelectedPatientName] = useState('');
   const [disabledSlots, setDisabledSlots] = useState([]);
   const [bookedSlots, setBookedSlots] = useState([]);
-  
-  
+
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -59,11 +60,25 @@ const Booking = () => {
   const [cvv, setCvv] = useState('');
   const [paypalEmail, setPaypalEmail] = useState('');
   const [paypalPassword, setPaypalPassword] = useState('');
-  
+
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setEmailAddress(session.user.email || '');
+        const fullName = session.user.user_metadata?.full_name || '';
+        const nameParts = fullName.split(' ');
+        if (nameParts.length > 0) setFirstName(nameParts[0]);
+        if (nameParts.length > 1) setLastName(nameParts.slice(1).join(' '));
+        setSelectedPatientName(fullName);
+      }
+    };
+    fetchUserSession();
+  }, []);
 
   const handleConfirmAndPay = async () => {
     try {
-      
+
       const { data: appointmentData, error: appointmentError } = await supabase
         .from('appointments')
         .insert([{
@@ -90,7 +105,7 @@ const Booking = () => {
         return;
       }
 
-      
+
       const bookingId = appointmentData?.[0]?.id || null;
       const { error: paymentError } = await supabase
         .from('payments')
@@ -109,6 +124,34 @@ const Booking = () => {
       if (paymentError) {
         console.error('Error saving payment:', paymentError);
       }
+
+      const serviceID = "YOUR_SERVICE_ID";
+      const templateID = "YOUR_TEMPLATE_ID";
+      const publicKey = "YOUR_PUBLIC_KEY";
+
+
+      if (serviceID !== "YOUR_SERVICE_ID") {
+        const templateParams = {
+          to_email: emailAddress,
+          patient_name: selectedPatientName || `${firstName} ${lastName}`,
+          doctor_name: selectedDoctor?.name || 'Doctor',
+          appointment_date: `${selectedDate} ${selectedMonth} ${selectedYear}`,
+          appointment_time: selectedTime,
+          clinic_name: clinics.find(c => c.id === selectedClinic)?.name || 'Clinic',
+          service_name: selectedSpeciality || 'General Consultation'
+        };
+
+        emailjs.send(serviceID, templateID, templateParams, publicKey)
+          .then((response) => {
+            console.log('Email sent successfully!', response.status, response.text);
+          })
+          .catch((err) => {
+            console.error('Failed to send email:', err);
+          });
+      } else {
+        console.log("EmailJS keys not configured yet. Skipping email notification.");
+      }
+      // -------------------------------
 
       setCurrentStep(6);
     } catch (err) {
@@ -168,11 +211,11 @@ const Booking = () => {
 
       if (selectedDoctor?.email) {
         const { data: scheduleData, error: scheduleError } = await supabase
-          .from('admin_schedules')
+          .from('doctor_schedules')
           .select('disabled_slots')
           .eq('email', selectedDoctor.email)
           .single();
-        
+
         if (scheduleData && scheduleData.disabled_slots) {
           const slots = scheduleData.disabled_slots.split(',').map(s => s.trim());
           setDisabledSlots(slots);
@@ -188,13 +231,13 @@ const Booking = () => {
   useEffect(() => {
     const fetchBookedSlots = async () => {
       if (selectedDoctor?.email && selectedDate) {
-        const dateString = `${selectedDate} ${selectedMonth} ${selectedYear}`; 
+        const dateString = `${selectedDate} ${selectedMonth} ${selectedYear}`;
         const { data: appointments, error } = await supabase
           .from('appointments')
           .select('appointment_time')
           .eq('doctor_email', selectedDoctor.email)
           .eq('appointment_date', dateString);
-          
+
         if (appointments) {
           setBookedSlots(appointments.map(a => a.appointment_time));
         } else if (error) {
@@ -272,8 +315,8 @@ const Booking = () => {
     <div className="booking-page-container">
       {selectedDoctor && (
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
-           <h2 style={{ color: "#0b60f5", fontWeight: "700" }}>Booking Appointment with {selectedDoctor.name}</h2>
-           <p style={{ color: "#757575" }}>{selectedDoctor.specialization || selectedDoctor.specialty}</p>
+          <h2 style={{ color: "#0b60f5", fontWeight: "700" }}>Booking Appointment with {selectedDoctor.name}</h2>
+          <p style={{ color: "#757575" }}>{selectedDoctor.specialization || selectedDoctor.specialty}</p>
         </div>
       )}
       <div className="stepper-wrapper">
@@ -350,14 +393,14 @@ const Booking = () => {
           )}
         </div>
 
-       
+
         {currentStep === 1 && (
           <div className="step-container">
             <div className="services-card">
               <div className="dropdown-section">
                 <label>Select Speciality</label>
                 <div className={`custom-select ${isSpecialityDropdownOpen ? 'open' : ''}`}>
-                  <div 
+                  <div
                     className="custom-select-header speciality-dropdown"
                     onClick={() => setIsSpecialityDropdownOpen(!isSpecialityDropdownOpen)}
                   >
@@ -368,7 +411,7 @@ const Booking = () => {
                   </div>
                   {isSpecialityDropdownOpen && (
                     <div className="custom-select-list">
-                      <div 
+                      <div
                         className={`custom-select-item ${!selectedSpeciality ? 'active' : ''}`}
                         onClick={() => {
                           setSelectedSpeciality('');
@@ -378,8 +421,8 @@ const Booking = () => {
                         Select Speciality
                       </div>
                       {specialities.map((spec) => (
-                        <div 
-                          key={spec.id} 
+                        <div
+                          key={spec.id}
                           className={`custom-select-item ${selectedSpeciality === spec.name ? 'active' : ''}`}
                           onClick={() => {
                             setSelectedSpeciality(spec.name);
@@ -427,7 +470,7 @@ const Booking = () => {
           </div>
         )}
 
-      
+
         {currentStep === 2 && (
           <div className="step-container">
             <div className="services-card">
@@ -602,7 +645,7 @@ const Booking = () => {
           </div>
         )}
 
-        
+
         {currentStep === 4 && (
           <div className="step-container">
             <div className="basic-info-card">
@@ -620,7 +663,7 @@ const Booking = () => {
                   <input type="text" className="form-input" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                 </div>
               </div>
-              
+
               <div className="form-row">
                 <div className="form-group">
                   <label>Email Address</label>
@@ -628,10 +671,10 @@ const Booking = () => {
                 </div>
                 <div className="form-group">
                   <label>Patient Name</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    placeholder="Enter Patient Name" 
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Enter Patient Name"
                     value={selectedPatientName}
                     onChange={(e) => setSelectedPatientName(e.target.value)}
                   />
@@ -668,34 +711,34 @@ const Booking = () => {
           </div>
         )}
 
-       
+
         {currentStep === 5 && (
           <div className="step-container">
             <div className="payment-layout">
-            
+
               <div className="payment-gateway-card">
                 <h4 className="payment-title">Payment Gateway</h4>
                 <div className="payment-methods">
-                  <button 
+                  <button
                     className={`method-btn ${paymentMethod === 'creditCard' ? 'active' : ''}`}
                     onClick={() => setPaymentMethod('creditCard')}
                   >
                     <FaCreditCard className="method-icon credit-card" /> Credit Card
                   </button>
-                  <button 
+                  <button
                     className={`method-btn ${paymentMethod === 'paypal' ? 'active' : ''}`}
                     onClick={() => setPaymentMethod('paypal')}
                   >
                     <FaPaypal className="method-icon paypal" /> Paypal
                   </button>
-                  <button 
+                  <button
                     className={`method-btn ${paymentMethod === 'stripe' ? 'active' : ''}`}
                     onClick={() => setPaymentMethod('stripe')}
                   >
                     <FaStripe className="method-icon stripe" /> Stripe
                   </button>
                 </div>
-                
+
                 <div className="payment-form">
                   {paymentMethod === 'creditCard' && (
                     <div className="payment-form">
@@ -754,7 +797,7 @@ const Booking = () => {
                     {appointmentTypes.find(a => a.id === appointmentType)?.name} ({clinics.find(c => c.id === selectedClinic)?.name})
                   </p>
                 </div>
-                
+
                 <div className="summary-divider"></div>
 
                 <h4 className="payment-title">Payment Info</h4>
@@ -774,7 +817,7 @@ const Booking = () => {
                   <span>Discount</span>
                   <span>-$15</span>
                 </div>
-                
+
                 <div className="payment-total">
                   <span>Total</span>
                   <span>{calculateTotal()}</span>
@@ -796,16 +839,16 @@ const Booking = () => {
         {/* Step 6: Confirmation */}
         {currentStep === 6 && (
           <div className="step-container">
-           
+
             <div className="confirmation-layout">
-            
+
               <div className="confirmation-left">
                 <div className="confirm-card">
                   <div className="confirm-header">
                     <FaCheckCircle className="success-icon" />
                     <h2>Booking Confirmed</h2>
                   </div>
-                  
+
                   <div className="confirm-doc-info">
                     <img src={docImage} alt="Dr. Michael Brown" className="confirm-doc-img" />
                     <p>
@@ -818,7 +861,7 @@ const Booking = () => {
                       <h4>Booking Info</h4>
                       <button className="btn-reschedule"><FaCalendarAlt /> Reschedule</button>
                     </div>
-                    
+
                     <div className="info-grid">
                       <div className="info-block">
                         <span className="info-label">Service</span>
@@ -839,7 +882,7 @@ const Booking = () => {
                       <div className="info-block full-width">
                         <span className="info-label">Clinic Name & Location</span>
                         <span className="info-value">
-                          {clinics.find(c => c.id === selectedClinic)?.name} <button type="button" className="link-text" style={{background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>View Location</button>
+                          {clinics.find(c => c.id === selectedClinic)?.name} <button type="button" className="link-text" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>View Location</button>
                         </span>
                       </div>
                     </div>
@@ -874,7 +917,7 @@ const Booking = () => {
               </div>
               */}
             </div>
-             <button className="back-to-bookings-btn" onClick={() => {
+            <button className="back-to-bookings-btn" onClick={() => {
               setCurrentStep(1);
               setSelectedSpeciality('');
               setSelectedService('Echocardiograms-1');

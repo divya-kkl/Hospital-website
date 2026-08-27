@@ -59,61 +59,64 @@ function Header() {
 
                     <div className="nav-actions">
                         {user ? (
-                            user.user_metadata?.role === 'admin' ? (
-                                // Admin is logged in, but on Home Page.
-                                // The user explicitly wants ONLY patient details in the profile section, 
-                                // and NO admin details should show up here.
-                                // We will hide the profile dropdown entirely for admins to prevent 'divya' from showing up.
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {/* Optional: Add a simple logout so they aren't trapped on the home page */}
-                                    <button className="btn-logout" onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>
-                                        <FaSignOutAlt style={{ marginRight: '5px' }} /> Admin Logout
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="profile-menu-container">
-                                    <button className="btn-profile-trigger" onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
-                                        <div className="profile-icon-wrapper">
-                                            <FaUser />
-                                        </div>
-                                    </button>
+                            <div className="profile-menu-container">
+                                <button className="btn-profile-trigger" onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}>
+                                    <div className="profile-icon-wrapper">
+                                        <FaUser />
+                                    </div>
+                                </button>
 
-                                    {isProfileDropdownOpen && (
-                                        <div className="profile-dropdown">
-                                            <div className="profile-dropdown-header">
-                                                <div className="profile-avatar-large">
-                                                    <FaUser />
-                                                </div>
-                                                <div className="profile-info">
-                                                    <h4>{user.user_metadata?.full_name || 'User'}</h4>
-                                                    <p>Patient</p>
-                                                </div>
+                                {isProfileDropdownOpen && (
+                                    <div className="profile-dropdown">
+                                        <div className="profile-dropdown-header">
+                                            <div className="profile-avatar-large">
+                                                <FaUser />
                                             </div>
-                                            <ul className="profile-dropdown-menu">
-                                                <li>
-                                                    <Link to="/profile" onClick={() => setIsProfileDropdownOpen(false)}>
-                                                        <FaRegUser className="dropdown-icon" /> My Profile
-                                                    </Link>
-                                                </li>
-                                                <li>
-                                                    <Link to="/profile" onClick={() => setIsProfileDropdownOpen(false)}>
-                                                        <FaCalendarAlt className="dropdown-icon" /> Appointments
-                                                    </Link>
-                                                </li>
-                                                <li className="divider"></li>
-                                                <li>
-                                                    <button className="btn-logout" onClick={handleLogout}>
-                                                        <FaSignOutAlt className="dropdown-icon" /> Log Out
-                                                    </button>
-                                                </li>
-                                            </ul>
+                                            <div className="profile-info">
+                                                <h4>{user.user_metadata?.full_name || 'User'}</h4>
+                                                <p>{user.user_metadata?.role === 'admin' ? 'Admin' : user.user_metadata?.role === 'doctor' ? 'Doctor' : 'Patient'}</p>
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
-                            )
+                                        <ul className="profile-dropdown-menu">
+                                            {user.user_metadata?.role === 'admin' ? (
+                                                <li>
+                                                    <Link to="/admin-dashboard" onClick={() => setIsProfileDropdownOpen(false)}>
+                                                        <FaUser className="dropdown-icon" /> Dashboard
+                                                    </Link>
+                                                </li>
+                                            ) : user.user_metadata?.role === 'doctor' ? (
+                                                <li>
+                                                    <Link to="/doctor-dashboard" onClick={() => setIsProfileDropdownOpen(false)}>
+                                                        <FaUser className="dropdown-icon" /> Dashboard
+                                                    </Link>
+                                                </li>
+                                            ) : (
+                                                <>
+                                                    <li>
+                                                        <Link to="/profile" onClick={() => setIsProfileDropdownOpen(false)}>
+                                                            <FaRegUser className="dropdown-icon" /> My Profile
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <Link to="/profile" onClick={() => setIsProfileDropdownOpen(false)}>
+                                                            <FaCalendarAlt className="dropdown-icon" /> Appointments
+                                                        </Link>
+                                                    </li>
+                                                </>
+                                            )}
+                                            <li className="divider"></li>
+                                            <li>
+                                                <button className="btn-logout" onClick={handleLogout}>
+                                                    <FaSignOutAlt className="dropdown-icon" /> Log Out
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
-                            <Link to="/register" className="btn btn-register">
-                                <FaUser className="btn-icon" /> Register
+                            <Link to="/patient-login" className="btn btn-register">
+                                <FaUser className="btn-icon" /> Login
                             </Link>
                         )}
 
@@ -139,12 +142,9 @@ function Header() {
 
                 <div className="drawer-nav">
                     <ul>
-                        <li><a href="#"><span>Home</span> <FaChevronRight className="drawer-arrow" /></a></li>
-                        <li><a href="#"><span>Doctors</span> <FaChevronRight className="drawer-arrow" /></a></li>
-                        <li><a href="#"><span>Patients</span> <FaChevronRight className="drawer-arrow" /></a></li>
-                        <li><a href="#"><span>Pharmacy</span> <FaChevronRight className="drawer-arrow" /></a></li>
-                        <li><a href="#"><span>Pages</span> <FaChevronRight className="drawer-arrow" /></a></li>
-                        <li><a href="#"><span>Blog</span> <FaChevronRight className="drawer-arrow" /></a></li>
+                        <li><a href="/"><span>Home</span> <FaChevronRight className="drawer-arrow" /></a></li>
+                        <li><a href="#featured-doctors"><span>Doctors</span> <FaChevronRight className="drawer-arrow" /></a></li>
+                        <li><a href="#footer">Contact</a></li>
                     </ul>
                 </div>
 

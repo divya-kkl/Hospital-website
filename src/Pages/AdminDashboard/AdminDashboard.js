@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../Supabase';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaUserMd, FaSignOutAlt, FaBars, FaCalendarCheck } from 'react-icons/fa';
-import DoctorSchedule from './DoctorSchedule';
-import AppointmentManagement from './AppointmentManagement';
+import { FaUserMd, FaSignOutAlt, FaBars, FaCalendarCheck, FaChartPie } from 'react-icons/fa';
+import ManageDoctors from './ManageDoctors';
+import AllAppointments from './AllAppointments';
 import './AdminDashboard.css';
 import log from '../../assets/log.png';
 
+import AdminOverview from './AdminOverview';
+
 function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('appointments');
+  const [activeTab, setActiveTab] = useState('overview');
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,24 +19,11 @@ function AdminDashboard() {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        navigate('/admin'); 
+        navigate('/admin-login'); 
       } else {
-        let isAdmin = session.user.user_metadata?.role === 'admin';
+        const role = session.user.user_metadata?.role;
         
-        // Fallback for older admin accounts without the role metadata
-        if (!isAdmin) {
-           const { data: adminData } = await supabase
-             .from('admin_users')
-             .select('email')
-             .eq('email', session.user.email)
-             .single();
-             
-           if (adminData) {
-             isAdmin = true;
-           }
-        }
-
-        if (!isAdmin) {
+        if (role !== 'admin') {
           navigate('/profile'); 
         } else {
           setUser(session.user);
@@ -46,7 +35,7 @@ function AdminDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/admin');
+    navigate('/admin-login');
   };
 
   return (
@@ -61,40 +50,40 @@ function AdminDashboard() {
 
       {/* Sidebar */}
       <aside className={`admin-sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div className="sidebar-logo">
+        <div className="admin-sidebar-logo">
           <img src={log} alt="Logo" />
         </div>
-        <div className="sidebar-user">
+        <div className="admin-sidebar-user">
           <p>Welcome,</p>
-          <h4>{user?.user_metadata?.full_name || 'Admin'}</h4>
+          <h4>{user?.user_metadata?.full_name || 'Super Admin'}</h4>
         </div>
         
-        <nav className="sidebar-nav">
+        <nav className="admin-sidebar-nav">
           <ul>
             <li 
-              className={activeTab === 'dashboard' ? 'active' : ''}
-              onClick={() => { setActiveTab('dashboard'); setIsMobileMenuOpen(false); }}
+              className={activeTab === 'overview' ? 'active' : ''}
+              onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
             >
-              <FaUserMd className="sidebar-icon" /> Dashboard Overview
+              <FaChartPie className="admin-sidebar-icon" /> Dashboard
             </li>
             <li 
-              className={activeTab === 'schedule' ? 'active' : ''}
-              onClick={() => { setActiveTab('schedule'); setIsMobileMenuOpen(false); }}
+              className={activeTab === 'doctors' ? 'active' : ''}
+              onClick={() => { setActiveTab('doctors'); setIsMobileMenuOpen(false); }}
             >
-              <FaCalendarAlt className="sidebar-icon" /> Doctor Schedule
+              <FaUserMd className="admin-sidebar-icon" /> Manage Doctors
             </li>
             <li 
               className={activeTab === 'appointments' ? 'active' : ''}
               onClick={() => { setActiveTab('appointments'); setIsMobileMenuOpen(false); }}
             >
-              <FaCalendarCheck className="sidebar-icon" /> Appointments
+              <FaCalendarCheck className="admin-sidebar-icon" /> All Appointments
             </li>
           </ul>
         </nav>
 
-        <div className="sidebar-logout">
+        <div className="admin-sidebar-logout">
           <button onClick={handleLogout}>
-            <FaSignOutAlt className="sidebar-icon" /> Logout
+            <FaSignOutAlt className="admin-sidebar-icon" /> Logout
           </button>
         </div>
       </aside>
@@ -102,19 +91,16 @@ function AdminDashboard() {
       {/* Main Content Area */}
       <main className="admin-main-content">
         <div className="admin-content-wrapper">
-            {activeTab === 'dashboard' && (
-              <div className="dashboard-placeholder">
-                <h2>Admin Dashboard</h2>
-                <p>Welcome to the admin panel. Select "Doctor Schedule" from the sidebar to set your working hours.</p>
-              </div>
+            {activeTab === 'overview' && (
+              <AdminOverview />
             )}
             
-            {activeTab === 'schedule' && (
-              <DoctorSchedule user={user} />
+            {activeTab === 'doctors' && (
+              <ManageDoctors />
             )}
             
             {activeTab === 'appointments' && (
-              <AppointmentManagement user={user} />
+              <AllAppointments />
             )}
         </div>
       </main>

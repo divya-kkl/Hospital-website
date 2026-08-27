@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../../Supabase";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import log from "../../assets/log.png";
-import './AdminLogin.css';
+import './DoctorLogin.css';
 
-function AdminLogin() {
+function DoctorLogin() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -19,20 +19,13 @@ function AdminLogin() {
         setError("");
 
         try {
-            const { error, data } = await supabase.auth.signInWithPassword({
+            const { error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
 
             if (error) throw error;
-            
-            // Allow login only if role is admin
-            if (data.user?.user_metadata?.role !== 'admin') {
-                await supabase.auth.signOut();
-                throw new Error("Access denied: You do not have admin privileges.");
-            }
-
-            navigate('/admin-dashboard');
+            navigate('/doctor-dashboard');
 
         } catch (err) {
             setError(err.message);
@@ -42,22 +35,22 @@ function AdminLogin() {
     };
 
     return (
-        <div className="admin-login-container">
-            <div className="admin-login-card">
-                <div className="admin-login-header">
-                    <img src={log} alt="DOCCURE" className="admin-logo" />
-                    <h2>Admin Sign In</h2>
-                    <p>Sign in to access your administrative dashboard</p>
+        <div className="doctor-login-container">
+            <div className="doctor-login-card">
+                <div className="doctor-login-header">
+                    <img src={log} alt="DOCCURE" className="doctor-logo" />
+                    <h2>Doctor Sign In</h2>
+                    <p>Sign in to access your dashboard</p>
                 </div>
 
-                <form className="admin-login-form" onSubmit={handleSubmit}>
-                    <div className="admin-form-group">
+                <form className="doctor-login-form" onSubmit={handleSubmit}>
+                    <div className="doctor-form-group">
                         <label>Email Address</label>
-                        <div className="admin-input-wrapper">
-                            <FaEnvelope className="admin-input-icon" />
+                        <div className="doctor-input-wrapper">
+                            <FaEnvelope className="doctor-input-icon" />
                             <input
                                 type="email"
-                                placeholder="Enter admin email"
+                                placeholder="Enter doctor email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -65,10 +58,10 @@ function AdminLogin() {
                         </div>
                     </div>
 
-                    <div className="admin-form-group">
+                    <div className="doctor-form-group">
                         <label>Password</label>
-                        <div className="admin-input-wrapper">
-                            <FaLock className="admin-input-icon" />
+                        <div className="doctor-input-wrapper">
+                            <FaLock className="doctor-input-icon" />
                             <input
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Enter password"
@@ -78,7 +71,7 @@ function AdminLogin() {
                             />
                             <button
                                 type="button"
-                                className="admin-password-toggle"
+                                className="doctor-password-toggle"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -86,30 +79,24 @@ function AdminLogin() {
                         </div>
                     </div>
 
-                    {error && <div className="admin-error-message">{error}</div>}
+                    {error && <div className="doctor-error-message">{error}</div>}
 
-                    <div className="admin-form-actions">
-                        <div className="admin-remember-me">
+                    <div className="doctor-form-actions">
+                        <div className="doctor-remember-me">
                             <input type="checkbox" id="remember" />
                             <label htmlFor="remember">Remember me</label>
                         </div>
                     </div>
 
-                    <button type="submit" className="admin-login-btn" disabled={loading}>
+                    <button type="submit" className="doctor-login-btn" disabled={loading}>
                         {loading ? "Processing..." : "Sign In"}
                     </button>
                 </form>
 
-                <div style={{ textAlign: "center", marginTop: "20px", fontSize: "14px", color: "#757575" }}>
-                    Don't have an account? 
-                    <Link to="/admin-register" style={{ color: "#0b60f5", fontWeight: "600", cursor: "pointer", textDecoration: "none", marginLeft: "5px" }}>
-                        Sign Up here
-                    </Link>
-                </div>
 
             </div>
         </div>
     );
 }
 
-export default AdminLogin;
+export default DoctorLogin;

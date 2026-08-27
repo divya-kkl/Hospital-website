@@ -19,7 +19,7 @@ function DoctorSchedule({ user }) {
     const fetchSchedule = async () => {
       try {
         const { data } = await supabase
-          .from('admin_schedules')
+          .from('doctor_schedules')
           .select('*')
           .eq('email', user.email)
           .single();
@@ -69,7 +69,7 @@ function DoctorSchedule({ user }) {
       };
 
       const { data: existingData } = await supabase
-        .from('admin_schedules')
+        .from('doctor_schedules')
         .select('id')
         .eq('email', user.email)
         .single();
@@ -77,13 +77,13 @@ function DoctorSchedule({ user }) {
       let error;
       if (existingData) {
         const res = await supabase
-          .from('admin_schedules')
+          .from('doctor_schedules')
           .update(scheduleData)
           .eq('email', user.email);
         error = res.error;
       } else {
         const res = await supabase
-          .from('admin_schedules')
+          .from('doctor_schedules')
           .insert([scheduleData]);
         error = res.error;
       }
