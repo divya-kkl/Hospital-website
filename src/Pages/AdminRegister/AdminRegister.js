@@ -1,19 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../Supabase";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser, FaGraduationCap, FaStethoscope, FaBriefcase, FaIdCard, FaMapMarkerAlt, FaMoneyBillWave } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import log from "../../assets/log.png";
 import './AdminRegister.css';
 
 function AdminRegister() {
     const [name, setName] = useState("");
-    const [qualification, setQualification] = useState("");
-    const [specialization, setSpecialization] = useState("");
-    const [experience, setExperience] = useState("");
-    const [registrationDetails, setRegistrationDetails] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
-    const [location, setLocation] = useState("");
-    const [fee, setFee] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -50,19 +43,12 @@ function AdminRegister() {
             const { error: dbError } = await supabase
                 .from('admin_users')
                 .insert([{
-                    name,
-                    email,
-                    qualification,
-                    specialization,
-                    experience,
-                    registration_details: registrationDetails,
-                    image: imageUrl,
-                    location,
-                    fee
+                    name: name,
+                    email: email,
+                    role: 'admin'
                 }]);
 
             if (dbError) throw dbError;
-
             setSuccessMessage("Admin Account Created Successfully! Please Sign In.");
             setTimeout(() => {
                 navigate('/admin-login');
@@ -81,7 +67,7 @@ function AdminRegister() {
                 <div className="admin-register-header">
                     <img src={log} alt="DOCCURE" className="admin-logo" />
                     <h2>Admin Sign Up</h2>
-                    <p>Create a new admin account</p>
+                    <p>Create a new hospital admin account</p>
                 </div>
 
                 <form className="admin-register-form" onSubmit={handleSubmit}>
@@ -91,106 +77,9 @@ function AdminRegister() {
                             <FaUser className="admin-input-icon" />
                             <input
                                 type="text"
-                                placeholder="Enter your name"
+                                placeholder="Enter your full name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Qualification</label>
-                        <div className="admin-input-wrapper">
-                            <FaGraduationCap className="admin-input-icon" />
-                            <input
-                                type="text"
-                                placeholder="Enter your qualification (e.g. MBBS, MD)"
-                                value={qualification}
-                                onChange={(e) => setQualification(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Specialization</label>
-                        <div className="admin-input-wrapper">
-                            <FaStethoscope className="admin-input-icon" />
-                            <input
-                                type="text"
-                                placeholder="Enter specialization (e.g. Cardiologist)"
-                                value={specialization}
-                                onChange={(e) => setSpecialization(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Experience (Years)</label>
-                        <div className="admin-input-wrapper">
-                            <FaBriefcase className="admin-input-icon" />
-                            <input
-                                type="text"
-                                placeholder="Enter years of experience"
-                                value={experience}
-                                onChange={(e) => setExperience(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Registration Details</label>
-                        <div className="admin-input-wrapper">
-                            <FaIdCard className="admin-input-icon" />
-                            <input
-                                type="text"
-                                placeholder="Enter medical registration number"
-                                value={registrationDetails}
-                                onChange={(e) => setRegistrationDetails(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Profile Image URL</label>
-                        <div className="admin-input-wrapper">
-                            <input
-                                type="file"
-                                placeholder="Paste your image URL here"
-                                value={imageUrl}
-                                onChange={(e) => setImageUrl(e.target.value)}
-                                style={{ paddingLeft: "15px" }}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Location</label>
-                        <div className="admin-input-wrapper">
-                            <FaMapMarkerAlt className="admin-input-icon" />
-                            <input
-                                type="text"
-                                placeholder="Enter your location (e.g., Ogden, IA)"
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="admin-form-group">
-                        <label>Consultation Fee</label>
-                        <div className="admin-input-wrapper">
-                            <FaMoneyBillWave className="admin-input-icon" />
-                            <input
-                                type="text"
-                                placeholder="Enter fee (e.g., $350)"
-                                value={fee}
-                                onChange={(e) => setFee(e.target.value)}
                                 required
                             />
                         </div>

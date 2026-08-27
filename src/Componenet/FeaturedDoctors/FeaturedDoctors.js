@@ -16,7 +16,7 @@ function FeaturedDoctors() {
     const fetchDoctors = async () => {
       try {
         const { data: doctors, error } = await supabase
-          .from('admin_users')
+          .from('doctor_users')
           .select('*')
           .limit(4);
 
@@ -27,7 +27,7 @@ function FeaturedDoctors() {
         if (doctors && doctors.length > 0) {
           const emails = doctors.map(d => d.email);
           const { data: schedules } = await supabase
-            .from('admin_schedules')
+            .from('doctor_schedules')
             .select('email, status')
             .in('email', emails);
 

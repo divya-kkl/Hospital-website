@@ -65,7 +65,7 @@ function Register() {
 
       console.log("Database Response:", dbData);
       setMessage("Registration Successful!");
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate("/patient-login"), 1500);
 
     } catch (error) {
       setMessage("(Error): " + error.message);
@@ -162,9 +162,21 @@ function Register() {
             </div>
 
             <button type="submit" className="btn-signup" disabled={loading}>
-              {loading ? "Submitting..." : "Sign In"}
+              {loading ? "Submitting..." : "Sign Up"}
             </button>
           </form>
+
+          <div style={{ textAlign: "center", marginTop: "15px" }}>
+            <p style={{ color: "#555", fontSize: "14px" }}>
+              Already have an account?{" "}
+              <span 
+                style={{ color: "#3498db", fontWeight: "bold", cursor: "pointer", textDecoration: "underline" }} 
+                onClick={() => navigate("/patient-login")}
+              >
+                Sign In
+              </span>
+            </p>
+          </div>
 
           {message && (
             <p className={message.includes("Error") ? "error-message" : "success-message"}>

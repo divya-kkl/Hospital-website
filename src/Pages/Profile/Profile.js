@@ -8,7 +8,7 @@ function Profile() {
   const [profileData, setProfileData] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('appointments');
   const navigate = useNavigate();
 
   // Form State
@@ -28,9 +28,9 @@ function Profile() {
         if (session && session.user) {
 
 
-          // If the user is an admin, redirect them to the admin dashboard
-          if (session.user.user_metadata?.role === 'admin') {
-            navigate('/admin-dashboard');
+          // If the user is a doctor, redirect them to the doctor dashboard
+          if (session.user.user_metadata?.role === 'doctor') {
+            navigate('/doctor-dashboard');
             return;
           }
 
@@ -66,7 +66,7 @@ function Profile() {
             .from('appointments')
             .select('*')
             .eq('email_address', email)
-            .order('created_at', { ascending: false });
+            .order('appointment_date', { ascending: false });
 
           if (aptError) {
              console.error("Error fetching appointments:", aptError);
@@ -154,7 +154,7 @@ function Profile() {
                         <h3>{apt.service || 'General Consultation'}</h3>
                         <div style={{ display: 'flex', gap: '10px' }}>
                           <span className="apt-type-badge">{apt.appointment_type || 'Clinic'}</span>
-                          <span className={`apt-status-badge ${apt.status || 'pending'}`}>
+                          <span className={`apt-status-badge ${apt.status ? apt.status.toLowerCase() : 'pending'}`}>
                              {apt.status || 'pending'}
                           </span>
                         </div>

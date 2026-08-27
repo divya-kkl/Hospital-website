@@ -1,4 +1,4 @@
-.admin-register-container {
+.doctor-login-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,7 +8,7 @@
     padding: 20px;
 }
 
-.admin-register-card {
+.doctor-login-card {
     background: #ffffff;
     width: 100%;
     max-width: 450px;
@@ -17,61 +17,61 @@
     padding: 40px;
 }
 
-.admin-register-header {
+.doctor-login-header {
     text-align: center;
     margin-bottom: 30px;
 }
 
-.admin-logo {
+.doctor-logo {
     width: 150px;
     margin-bottom: 15px;
 }
 
-.admin-register-header h2 {
+.doctor-login-header h2 {
     color: #1e293b;
     font-size: 24px;
     font-weight: 700;
     margin: 0 0 8px 0;
 }
 
-.admin-register-header p {
+.doctor-login-header p {
     color: #64748b;
     font-size: 14px;
     margin: 0;
 }
 
-.admin-register-form {
+.doctor-login-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.admin-form-group {
+.doctor-form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.admin-form-group label {
+.doctor-form-group label {
     font-size: 14px;
     font-weight: 500;
     color: #475569;
 }
 
-.admin-input-wrapper {
+.doctor-input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.admin-input-icon {
+.doctor-input-icon {
     position: absolute;
     left: 15px;
     color: #94a3b8;
     font-size: 16px;
 }
 
-.admin-input-wrapper input {
+.doctor-input-wrapper input {
     width: 100%;
     padding: 12px 15px 12px 45px;
     border: 1.5px solid #e2e8f0;
@@ -83,13 +83,13 @@
     background-color: #f8fafc;
 }
 
-.admin-input-wrapper input:focus {
+.doctor-input-wrapper input:focus {
     border-color: #0b60f5;
     background-color: #ffffff;
     box-shadow: 0 0 0 4px rgba(11, 96, 245, 0.1);
 }
 
-.admin-password-toggle {
+.doctor-password-toggle {
     position: absolute;
     right: 15px;
     background: none;
@@ -101,7 +101,31 @@
     align-items: center;
 }
 
-.admin-register-btn {
+.doctor-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.doctor-remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.doctor-remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #0b60f5;
+}
+
+.doctor-remember-me label {
+    font-size: 14px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.doctor-login-btn {
     background-color: #0b60f5;
     color: white;
     border: none;
@@ -114,16 +138,16 @@
     margin-top: 10px;
 }
 
-.admin-register-btn:hover {
+.doctor-login-btn:hover {
     background-color: #084eb8;
 }
 
-.admin-register-btn:disabled {
+.doctor-login-btn:disabled {
     background-color: #93c5fd;
     cursor: not-allowed;
 }
 
-.admin-error-message {
+.doctor-error-message {
     background-color: #fef2f2;
     color: #ef4444;
     padding: 10px;

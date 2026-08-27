@@ -5,17 +5,21 @@ import Header from './Componenet/Header/Header';
 import Footer from './Componenet/Footer/Footer';
 import Home from './Pages/Home/Home';
 import Register from './Pages/Register/Register';
+import PatientLogin from './Pages/Login/PatientLogin';
 import Booking from './Pages/Booking/Booking';
 import Profile from './Pages/Profile/Profile';
+import DoctorLogin from './Pages/DoctorLogin/DoctorLogin';
+
+import DoctorDashboard from './Pages/DoctorDashboard/DoctorDashboard';
+import Doctors from './Pages/Doctors/Doctors';
+
 import AdminLogin from './Pages/AdminLogin/AdminLogin';
 import AdminRegister from './Pages/AdminRegister/AdminRegister';
-
 import AdminDashboard from './Pages/AdminDashboard/AdminDashboard';
-import Doctors from './Pages/Doctors/Doctors';
 
 function AppContent() {
   const location = useLocation();
-  const hiddenRoutes = ['/admin-dashboard', '/register', '/admin-login', '/admin-register'];
+  const hiddenRoutes = ['/doctor-dashboard', '/register', '/patient-login', '/doctor-login', '/admin-dashboard', '/admin-login', '/admin-register'];
   const showHeaderFooter = !hiddenRoutes.includes(location.pathname);
   const showFooter = showHeaderFooter && location.pathname !== '/booking-page';
 
@@ -27,13 +31,18 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/patient-login" element={<PatientLogin />} />
         <Route path="/booking-page" element={<Booking />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/doctor-login" element={<DoctorLogin />} />
+        <Route path="/doctor" element={<Navigate to="/doctor-login" replace />} />
+        <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+        <Route path="/doctors" element={<Doctors />} />
+        
+        {/* Admin Routes */}
         <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/admin" element={<Navigate to="/admin-login" replace />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/doctors" element={<Doctors />} />
       </Routes>
 
       {showFooter && <Footer />}
